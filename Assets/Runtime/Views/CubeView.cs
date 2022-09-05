@@ -1,22 +1,18 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-
-namespace Assets.Runtime.Views
+public class CubeViews : MonoBehaviour
 {
-
-    
-    public class CubeView : MonoBehaviour
+    // Start is called before the first frame update
+    void Start()
     {
+        
+    }
 
-        float rotationSpeed = 1f;
-
-        private void OnMouseDrag()
-        {
-            float xAxisRotation = Input.GetAxis("Mouse X") * rotationSpeed;
-            float yAxisRotation = Input.GetAxis("Mouse Y") * rotationSpeed;
-
-            transform.Rotate(Vector3.down, xAxisRotation);
-            transform.Rotate(Vector3.right, yAxisRotation);
-        }
+    // Update is called once per frame
+    void Update()
+    {
+        
     }
 }

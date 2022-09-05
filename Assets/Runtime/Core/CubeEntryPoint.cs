@@ -10,7 +10,6 @@ public class CubeEntryPoint : LifetimeScope
     [SerializeField] private CubeVisualConfig _cubeConfig;
     [SerializeField] private GameObject _cubeParent;
     [SerializeField] private UiButtonsContainer _buttons;
-    [SerializeField] private CubeView _cubeView;
 
     protected override void Configure(IContainerBuilder builder)
     {
