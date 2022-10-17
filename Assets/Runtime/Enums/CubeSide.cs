@@ -1,6 +1,6 @@
-﻿namespace Assets.Runtime.Enumns
+﻿namespace Assets.Runtime.Enums
 {
-    public enum ParsingSide
+    public enum CubeSide
     {
         UpSide,
         DownSide,

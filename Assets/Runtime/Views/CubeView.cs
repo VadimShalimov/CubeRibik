@@ -1,15 +1,15 @@
-﻿using Assets.Runtime.Enumns;
+﻿using Assets.Runtime.Enums;
 using UnityEngine;
 
 namespace Assets.Runtime.Views
 {
     public class CubeView : MonoBehaviour
     {
-        public ParsingSide[] Sides => _sidesArray;
+        public CubeSide[] Sides => _sidesArray;
 
-        private ParsingSide[] _sidesArray = new ParsingSide[3];
+        private CubeSide[] _sidesArray = new CubeSide[3];
    
-        public void SetSides(params ParsingSide[] parsingSide)
+        public void SetSides(params CubeSide[] parsingSide)
         {
             _sidesArray = parsingSide;
         }

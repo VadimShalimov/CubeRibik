@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Runtime.Enumns
+namespace Assets.Runtime.Enums
 {
     public enum CubeMoveTurns
     {
