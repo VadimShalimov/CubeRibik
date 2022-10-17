@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Assets.Runtime.Configs;
 using VContainer.Unity;
+using VContainer;
 using System.Collections.Generic;
 using Assets.Runtime.Controllers;
 using Assets.Runtime.Views;
@@ -22,7 +23,7 @@ namespace Assets.Runtime.Core
 
         public void Start()
         {
-            var cubeList = new List<GameObject>();
+            var cubeList = new List<CubeView>();
 
             for (int x = -1; x < 2; x++)
                 for (int y = -1; y < 2; y++)
@@ -30,13 +31,14 @@ namespace Assets.Runtime.Core
                     {
                         var cube = Object.Instantiate(_visualConfig.CubePrefab, _cubeParent.transform);
                         cube.transform.localPosition = new Vector3(-x, -y, z);
-                        cubeList.Add(cube);
+                        var cubeView = cube.AddComponent<CubeView>();
+                        cubeList.Add(cubeView);
                     }
 
             _lifetimeScope.CreateChild(builder =>
             {
                 builder.RegisterEntryPoint<CameraController>();
-                builder.RegisterComponent(cubeList);
+                builder.RegisterInstance(cubeList);
                 builder.RegisterEntryPoint<CubeController>();
             });
         }

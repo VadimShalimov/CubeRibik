@@ -8,26 +8,19 @@ using DG.Tweening;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using System;
+using System.Linq;
 
 namespace Assets.Runtime.Controllers
 {
     public class CubeController : ITickable, IStartable, IDisposable, IAsyncStartable
     {
         private const int CentreOfCubeIndex = 13;
-        private const int RotateAngleValue = 5;
         private const float _mouseSpeed = 4f;
 
-        private readonly List<GameObject> _cubeList;
+        private readonly List<CubeView> _cubeList;
         private readonly GameObject _parentCube;
         private readonly UiButtonsContainer _buttons;
         private readonly int _numberForRandom;
-
-        private List<GameObject> _upCubes => _cubeList.FindAll(x => Mathf.Round(x.transform.localPosition.y) == 1);
-        private List<GameObject> _downCubes => _cubeList.FindAll(x => Mathf.Round(x.transform.localPosition.y) == -1);
-        private List<GameObject> _frontCubes => _cubeList.FindAll(x => Mathf.Round(x.transform.localPosition.x) == 1);
-        private List<GameObject> _backCubes => _cubeList.FindAll(x => Mathf.Round(x.transform.localPosition.x) == -1);
-        private List<GameObject> _leftCubes => _cubeList.FindAll(x => Mathf.Round(x.transform.localPosition.z) == 1);
-        private List<GameObject> _rightCubes => _cubeList.FindAll(x => Mathf.Round(x.transform.localPosition.z) == -1);
 
         private List<CubeMoveTurns> _savedTurns = new List<CubeMoveTurns>();
 
@@ -35,15 +28,12 @@ namespace Assets.Runtime.Controllers
 
         private Vector2 _mouseInputValue;
 
-        private Tween _rotateTween;
-
         private CancellationTokenSource _cts;
         private CancellationToken _cancellation;
 
         private Sequence _activeSequence;
 
-
-        public CubeController(List<GameObject> cubeList, GameObject parentCube, CubeVisualConfig cubeVisual, UiButtonsContainer buttons)
+        public CubeController(List<CubeView> cubeList, GameObject parentCube, CubeVisualConfig cubeVisual, UiButtonsContainer buttons)
         {
             _cubeList = cubeList;
             _parentCube = parentCube;
@@ -57,6 +47,38 @@ namespace Assets.Runtime.Controllers
             _buttons.ReverseButton.onClick.AddListener(CubeReverseButton);
             _buttons.StartRotate.onClick.AddListener(RotateWholeCube);
             _buttons.StopRotate.onClick.AddListener(StopRotateCube);
+
+            _cubeList[0].SetSides(ParsingSide.LeftSide, ParsingSide.BackSide, ParsingSide.UpSide);
+            _cubeList[1].SetSides(ParsingSide.BackSide, ParsingSide.UpSide);
+            _cubeList[2].SetSides(ParsingSide.BackSide, ParsingSide.RightSide, ParsingSide.UpSide);
+            _cubeList[3].SetSides(ParsingSide.BackSide, ParsingSide.LeftSide);
+            _cubeList[4].SetSides(ParsingSide.BackSide);
+            _cubeList[5].SetSides(ParsingSide.BackSide, ParsingSide.RightSide);
+            _cubeList[6].SetSides(ParsingSide.BackSide, ParsingSide.LeftSide, ParsingSide.DownSide);
+            _cubeList[7].SetSides(ParsingSide.BackSide, ParsingSide.DownSide);
+            _cubeList[8].SetSides(ParsingSide.BackSide, ParsingSide.DownSide, ParsingSide.RightSide);
+
+
+            _cubeList[18].SetSides(ParsingSide.FrontSide, ParsingSide.LeftSide, ParsingSide.UpSide);
+            _cubeList[19].SetSides(ParsingSide.FrontSide, ParsingSide.UpSide);
+            _cubeList[20].SetSides(ParsingSide.FrontSide, ParsingSide.RightSide, ParsingSide.UpSide);
+            _cubeList[21].SetSides(ParsingSide.FrontSide, ParsingSide.LeftSide);
+            _cubeList[22].SetSides(ParsingSide.FrontSide);
+            _cubeList[23].SetSides(ParsingSide.FrontSide, ParsingSide.RightSide);
+            _cubeList[24].SetSides(ParsingSide.FrontSide, ParsingSide.LeftSide, ParsingSide.DownSide);
+            _cubeList[25].SetSides(ParsingSide.FrontSide, ParsingSide.DownSide);
+            _cubeList[26].SetSides(ParsingSide.FrontSide, ParsingSide.RightSide, ParsingSide.DownSide);
+
+            _cubeList[9].SetSides(ParsingSide.LeftSide, ParsingSide.UpSide);
+            _cubeList[12].SetSides(ParsingSide.LeftSide);
+            _cubeList[15].SetSides(ParsingSide.LeftSide, ParsingSide.DownSide);
+
+            _cubeList[10].SetSides(ParsingSide.UpSide);
+            _cubeList[14].SetSides(ParsingSide.RightSide);
+            _cubeList[17].SetSides(ParsingSide.RightSide, ParsingSide.DownSide);
+            _cubeList[11].SetSides(ParsingSide.RightSide, ParsingSide.UpSide);
+
+            _cubeList[16].SetSides(ParsingSide.DownSide);
         }
 
         public void Dispose()
@@ -79,8 +101,8 @@ namespace Assets.Runtime.Controllers
         {
             if (_turnRecharge)
                 CheckInputForCube();
-
-            InputMouseForRotate();
+            
+            //InputMouseForRotate();
         }
 
         private void RotateWholeCube()
@@ -102,7 +124,6 @@ namespace Assets.Runtime.Controllers
             _activeSequence = DOTween.Sequence();
             await _activeSequence.Append(_parentCube.transform.DORotate(new Vector3(90, 0, 0), 0.5f, RotateMode.LocalAxisAdd))
                 .Append(_parentCube.transform.DORotate(new Vector3(0, 90, 0), 0.5f, RotateMode.LocalAxisAdd))
-                .Append(_parentCube.transform.DORotate(new Vector3(0, 0, 90), 0.5f, RotateMode.LocalAxisAdd))
                 .Join(_parentCube.transform.DOScale(Vector3.zero, 0.5f))
                 .AwaitForComplete(cancellationToken: token);
         }
@@ -124,54 +145,139 @@ namespace Assets.Runtime.Controllers
             float xAxisRotation = Input.GetAxis("Mouse X") * _mouseSpeed;
             float yAxisRotation = Input.GetAxis("Mouse Y") * _mouseSpeed;
 
-            
+
             if (Input.GetMouseButton(0))
             {
 
-                //_parentCube.transform.Rotate(Vector3.down, xAxisRotation);
-                //_parentCube.transform.Rotate(Vector3.right, yAxisRotation);
-                //   _parentCube.transform.localRotation = Quaternion.Euler(-_mouseInputValue.y, _mouseInputValue.x, 0);
+                _parentCube.transform.Rotate(Vector3.down, xAxisRotation);
+                _parentCube.transform.Rotate(Vector3.right, yAxisRotation);
+                _parentCube.transform.localRotation = Quaternion.Euler(-_mouseInputValue.y, _mouseInputValue.x, 0);
             }
         }
 
         private void CheckInputForCube()
         {
             if (Input.GetKeyDown(KeyCode.W))
-                RotateCube(_upCubes, CubeMoveTurns.Up, true);
+            {
+                RotateSide(ParsingForAllSide(ParsingSide.UpSide), CubeMoveTurns.UpForSide, true).Forget();
+                UpdateSides(ParsingSide.UpSide, ParsingSide.FrontSide, ParsingSide.LeftSide, ParsingSide.RightSide, ParsingSide.BackSide);
+            }
             else if (Input.GetKeyDown(KeyCode.S))
-                RotateCube(_downCubes, CubeMoveTurns.Down, true);
+            {
+                RotateSide(ParsingForAllSide(ParsingSide.DownSide), CubeMoveTurns.DownForSide, true).Forget();
+                UpdateSides(ParsingSide.DownSide, ParsingSide.BackSide, ParsingSide.RightSide, ParsingSide.LeftSide, ParsingSide.FrontSide);
+            }
             else if (Input.GetKeyDown(KeyCode.A))
-                RotateCube(_leftCubes, CubeMoveTurns.Left, true);
+            {
+                RotateSide(ParsingForAllSide(ParsingSide.LeftSide), CubeMoveTurns.LeftForSide, true).Forget();
+                UpdateSides(ParsingSide.LeftSide, ParsingSide.UpSide, ParsingSide.FrontSide, ParsingSide.BackSide, ParsingSide.DownSide);
+            }
             else if (Input.GetKeyDown(KeyCode.D))
-                RotateCube(_rightCubes, CubeMoveTurns.Right, true);
+            {
+                RotateSide(ParsingForAllSide(ParsingSide.RightSide), CubeMoveTurns.RightForSide, true).Forget();
+                UpdateSides(ParsingSide.RightSide, ParsingSide.UpSide, ParsingSide.BackSide, ParsingSide.FrontSide, ParsingSide.DownSide);
+            }
             else if (Input.GetKeyDown(KeyCode.Q))
-                RotateCube(_frontCubes, CubeMoveTurns.Front, true);
+            {
+                RotateSide(ParsingForAllSide(ParsingSide.FrontSide), CubeMoveTurns.FrontForSide, true).Forget();
+                UpdateSides(ParsingSide.FrontSide, ParsingSide.DownSide, ParsingSide.RightSide, ParsingSide.LeftSide, ParsingSide.UpSide);
+            }
             else if (Input.GetKeyDown(KeyCode.E))
-                RotateCube(_backCubes, CubeMoveTurns.Back, true);
+            {
+                RotateSide(ParsingForAllSide(ParsingSide.BackSide), CubeMoveTurns.BackForSide, true).Forget();
+                UpdateSides(ParsingSide.BackSide, ParsingSide.UpSide, ParsingSide.LeftSide, ParsingSide.RightSide, ParsingSide.DownSide);
+            }
+        }
+
+        private void UpdateSides(ParsingSide sideOne, ParsingSide sideTwo, ParsingSide sideTree, ParsingSide sideFour, ParsingSide sideFive)
+        {
+            var leftUp = _cubeList.Where(x => x.Sides.Contains(sideOne) && x.Sides.Contains(sideTwo) && x.Sides.Contains(sideTree)).ToList();//7
+            var rightUp = _cubeList.Where(x => x.Sides.Contains(sideOne) && x.Sides.Contains(sideTwo) && x.Sides.Contains(sideFour)).ToList();//9
+            var leftDown = _cubeList.Where(x => x.Sides.Contains(sideOne) && x.Sides.Contains(sideFive) && x.Sides.Contains(sideTree)).ToList();//1
+            var rightdDown = _cubeList.Where(x => x.Sides.Contains(sideOne) && x.Sides.Contains(sideFive) && x.Sides.Contains(sideFour)).ToList();//3
+
+            var left = _cubeList.Where(x => x.Sides.Contains(sideOne) && x.Sides.Contains(sideTree)).ToList();
+            var right = _cubeList.Where(x => x.Sides.Contains(sideOne) && x.Sides.Contains(sideFour)).ToList();
+            var down = _cubeList.Where(x => x.Sides.Contains(sideOne) && x.Sides.Contains(sideFive)).ToList();
+            var up = _cubeList.Where(x => x.Sides.Contains(sideOne) && x.Sides.Contains(sideTwo)).ToList();
+
+            for (int i = 0; i < 27; i++)
+            {
+                var cube = _cubeList[i];
+
+                if (leftUp.Contains(cube))
+                {
+                    _cubeList[i].SetSides(sideOne, sideTwo, sideFour);
+                }
+
+                if (rightUp.Contains(cube))
+                {
+                    _cubeList[i].SetSides(sideOne, sideFive, sideFour);
+                }
+
+                if (leftDown.Contains(cube))
+                {
+                    _cubeList[i].SetSides(sideOne, sideTwo, sideTree);
+                }
+                
+                if (rightdDown.Contains(cube))
+                {
+                    _cubeList[i].SetSides(sideOne, sideFive, sideTree);
+                }
+
+                if (left.Contains(cube))
+                {
+                    _cubeList[i].SetSides(sideOne, sideTwo);
+                }
+
+                if (right.Contains(cube))
+                {
+                    _cubeList[i].SetSides(sideOne, sideFive);
+                }
+
+                if (down.Contains(cube))
+                {
+                    _cubeList[i].SetSides(sideOne, sideTree);
+                }
+
+                if (up.Contains(cube))
+                {
+                    _cubeList[i].SetSides(sideOne, sideFour);
+                }
+            }
         }
 
         private void RandomTurnForButton()
         {
+
             for (int count = _numberForRandom; count >= 1; count--)
             {
                 int number = UnityEngine.Random.Range(0, 5);
 
                 switch (number)
                 {
-                    case 0: RotateCube(_upCubes, CubeMoveTurns.Up, true);
+                    case 0:
+                        RotateSide(ParsingForAllSide(ParsingSide.UpSide), CubeMoveTurns.UpForSide, true);
                         break;
-                    case 1: RotateCube(_downCubes, CubeMoveTurns.Down, true);
+                    case 1:
+                        RotateSide(ParsingForAllSide(ParsingSide.DownSide), CubeMoveTurns.DownForSide, true);
                         break;
-                    case 2: RotateCube(_leftCubes, CubeMoveTurns.Left, true);
+                    case 2:
+                        RotateSide(ParsingForAllSide(ParsingSide.LeftSide), CubeMoveTurns.LeftForSide, true);
                         break;
-                    case 3: RotateCube(_rightCubes, CubeMoveTurns.Right, true);
+                    case 3:
+                        RotateSide(ParsingForAllSide(ParsingSide.RightSide), CubeMoveTurns.RightForSide, true);
                         break;
-                    case 4: RotateCube(_frontCubes, CubeMoveTurns.Front, true);
+                    case 4:
+                        RotateSide(ParsingForAllSide(ParsingSide.FrontSide), CubeMoveTurns.FrontForSide, true);
                         break;
-                    case 5: RotateCube(_backCubes, CubeMoveTurns.Back, true);
+                    case 5:
+                        RotateSide(ParsingForAllSide(ParsingSide.BackSide), CubeMoveTurns.BackForSide, true);
                         break;
                 }
+
             }
+
         }
 
         public void CubeReverseButton()
@@ -182,23 +288,23 @@ namespace Assets.Runtime.Controllers
             {
                 switch (savedTurn)
                 {
-                    case CubeMoveTurns.Up:
-                        RotateCube(_upCubes, CubeMoveTurns.AntiUp, false);
+                    case CubeMoveTurns.UpForSide:
+                        RotateSide(ParsingForAllSide(ParsingSide.UpSide), CubeMoveTurns.AntiUpForSide, false);
                         continue;
-                    case CubeMoveTurns.Down:
-                        RotateCube(_downCubes, CubeMoveTurns.AntiDown, false);
+                    case CubeMoveTurns.DownForSide:
+                        RotateSide(ParsingForAllSide(ParsingSide.DownSide), CubeMoveTurns.AntiDownForSide, false);
                         continue;
-                    case CubeMoveTurns.Left:
-                        RotateCube(_leftCubes, CubeMoveTurns.AntiLeft, false);
+                    case CubeMoveTurns.LeftForSide:
+                        RotateSide(ParsingForAllSide(ParsingSide.LeftSide), CubeMoveTurns.AntiLeftForSide, false);
                         continue;
-                    case CubeMoveTurns.Right:
-                        RotateCube(_rightCubes, CubeMoveTurns.AntiRight, false);
+                    case CubeMoveTurns.RightForSide:
+                        RotateSide(ParsingForAllSide(ParsingSide.RightSide), CubeMoveTurns.AntiRightForSide, false);
                         continue;
-                    case CubeMoveTurns.Back:
-                        RotateCube(_backCubes, CubeMoveTurns.AntiBack, false);
+                    case CubeMoveTurns.BackForSide:
+                        RotateSide(ParsingForAllSide(ParsingSide.BackSide), CubeMoveTurns.AntiBackForSide, false);
                         continue;
-                    case CubeMoveTurns.Front:
-                        RotateCube(_frontCubes, CubeMoveTurns.AntiFront, false);
+                    case CubeMoveTurns.FrontForSide:
+                        RotateSide(ParsingForAllSide(ParsingSide.FrontSide), CubeMoveTurns.AntiFrontForSide, false);
                         continue;
                 }
             }
@@ -206,17 +312,47 @@ namespace Assets.Runtime.Controllers
             _savedTurns.Clear();
         }
 
-        private void RotateCube(List<GameObject> cubeListSide, CubeMoveTurns cubeMoveTurn, bool savedTurn)
+        private async UniTaskVoid RotateSide(List<CubeView> cubeListSide, CubeMoveTurns cubeMoveTurn, bool savedTurn)
         {
             _turnRecharge = false;
-            int angle = 0;
 
-            while (angle < 90)
+            var objectVoid = new GameObject();
+
+            objectVoid.transform.localPosition = _cubeList[CentreOfCubeIndex].gameObject.transform.localPosition;
+
+            foreach (var cube in cubeListSide)
             {
-                foreach (GameObject cube in cubeListSide)
-                    cube.transform.RotateAround(_cubeList[CentreOfCubeIndex].transform.position, cubeMoveTurn.MoveTurnToVector(), RotateAngleValue);
-                angle += RotateAngleValue;
+                cube.gameObject.transform.SetParent(objectVoid.transform);
             }
+
+            await objectVoid.transform.DOLocalRotate(cubeMoveTurn.MoveTurnToVector(), 0.5f, RotateMode.Fast);
+
+            if (savedTurn)
+            {
+                _savedTurns.Add(cubeMoveTurn);
+            }
+
+            foreach (var cubeInParent in cubeListSide)
+            {
+                cubeInParent.gameObject.transform.SetParent(_parentCube.transform);
+            }
+
+            foreach (var cube in cubeListSide)
+            {
+                
+            }
+            ****
+            GameObject.Destroy(objectVoid);
+
+            _turnRecharge = true;
+        }
+
+        private async UniTaskVoid RotateCube(List<CubeView> cubeListSide, CubeMoveTurns cubeMoveTurn, bool savedTurn)
+        {
+            _turnRecharge = false;
+
+            foreach (var cube in cubeListSide)
+                await cube.transform.DOLocalRotate(new Vector3(0, 0, 360), 0.5f, RotateMode.FastBeyond360).SetRelative(true).SetEase(Ease.Linear);
 
             if (savedTurn)
             {
@@ -224,6 +360,26 @@ namespace Assets.Runtime.Controllers
             }
 
             _turnRecharge = true;
+        }
+
+        public List<CubeView> ParsingForAllSide(ParsingSide parsingSide)
+        {
+            switch (parsingSide)
+            {
+                case ParsingSide.UpSide:
+                    return _cubeList.Where(x => x.Sides.Contains(ParsingSide.UpSide)).ToList();
+                case ParsingSide.DownSide:
+                    return _cubeList.Where(x => x.Sides.Contains(ParsingSide.DownSide)).ToList();
+                case ParsingSide.RightSide:
+                    return _cubeList.Where(x => x.Sides.Contains(ParsingSide.RightSide)).ToList();
+                case ParsingSide.LeftSide:
+                    return _cubeList.Where(x => x.Sides.Contains(ParsingSide.LeftSide)).ToList();
+                case ParsingSide.FrontSide:
+                    return _cubeList.Where(x => x.Sides.Contains(ParsingSide.FrontSide)).ToList();
+                case ParsingSide.BackSide:
+                    return _cubeList.Where(x => x.Sides.Contains(ParsingSide.BackSide)).ToList();
+            }
+            return null;
         }
     }
 }

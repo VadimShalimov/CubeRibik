@@ -1,18 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Assets.Runtime.Enumns;
 using UnityEngine;
 
-public class CubeViews : MonoBehaviour
+namespace Assets.Runtime.Views
 {
-    // Start is called before the first frame update
-    void Start()
+    public class CubeView : MonoBehaviour
     {
-        
-    }
+        public ParsingSide[] Sides => _sidesArray;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private ParsingSide[] _sidesArray = new ParsingSide[3];
+   
+        public void SetSides(params ParsingSide[] parsingSide)
+        {
+            _sidesArray = parsingSide;
+        }
     }
 }

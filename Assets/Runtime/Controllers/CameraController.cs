@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using VContainer.Unity;
 
 namespace Assets.Runtime.Controllers
@@ -18,7 +15,7 @@ namespace Assets.Runtime.Controllers
         }
         public void Tick()
         {
-            //_camera.transform.LookAt(_cubeParent.transform);
+            _camera.transform.LookAt(_cubeParent.transform);
         }
     }
 }
