@@ -4,33 +4,19 @@ namespace Assets.Runtime.Enums
 {
     public enum CubeMoveTurns
     {
-        Up,
-        Down,
-        Left,
-        Right,
-        Back,
-        Front,
+        CornerUp,
+        CornerDown,
+        CornerLeft,
+        CornerRight,
+        CornerBack,
+        CornerFront,
 
-        AntiUp,
-        AntiDown,
-        AntiLeft,
-        AntiRight,
-        AntiBack,
-        AntiFront,
-
-        UpForSide,
-        DownForSide,
-        LeftForSide,
-        RightForSide,
-        BackForSide,
-        FrontForSide,
-
-        AntiUpForSide,
-        AntiDownForSide,
-        AntiLeftForSide,
-        AntiRightForSide,
-        AntiBackForSide,
-        AntiFrontForSide,
+        AntiCornerUp,
+        AntiCornerDown,
+        AntiCornerLeft,
+        AntiCornerRight,
+        AntiCornerBack,
+        AntiCornerFront,
     }
 
     public static class CubeEnumnExtentions
@@ -39,57 +25,31 @@ namespace Assets.Runtime.Enums
         {
             switch (cubeMoveTurn)
             {
-                case CubeMoveTurns.Up:
-                    return new Vector3(0, 1, 0);
-                case CubeMoveTurns.Down:
-                    return new Vector3(0, -1, 0);
-                case CubeMoveTurns.Left:
-                    return new Vector3(0, 0, -1);
-                case CubeMoveTurns.Right:
-                    return new Vector3(0, 0, 1);
-                case CubeMoveTurns.Back:
-                    return new Vector3(1, 0, 0);
-                case CubeMoveTurns.Front:
-                    return new Vector3(-1, 0, 0);
-
-                case CubeMoveTurns.AntiUp:
-                    return new Vector3(0, -1, 0);
-                case CubeMoveTurns.AntiDown:
-                    return new Vector3(0, 1, 0);
-                case CubeMoveTurns.AntiLeft:
-                    return new Vector3(0, 0, 1);
-                case CubeMoveTurns.AntiRight:
-                    return new Vector3(0, 0, -1);
-                case CubeMoveTurns.AntiBack:
-                    return new Vector3(-1, 0, 0);
-                case CubeMoveTurns.AntiFront:
-                    return new Vector3(1, 0, 0);
-
-                case CubeMoveTurns.UpForSide:
+                case CubeMoveTurns.CornerUp:
                     return new Vector3(0, 90, 0);
-                case CubeMoveTurns.DownForSide:
+                case CubeMoveTurns.CornerDown:
                     return new Vector3(0, -90, 0);
-                case CubeMoveTurns.LeftForSide:
+                case CubeMoveTurns.CornerLeft:
                     return new Vector3(0, 0, -90);
-                case CubeMoveTurns.RightForSide:
+                case CubeMoveTurns.CornerRight:
                     return new Vector3(0, 0, 90);
-                case CubeMoveTurns.BackForSide:
+                case CubeMoveTurns.CornerBack:
                     return new Vector3(90, 0, 0);
-                case CubeMoveTurns.FrontForSide:
+                case CubeMoveTurns.CornerFront:
                     return new Vector3(-90, 0, 0);
 
 
-                case CubeMoveTurns.AntiUpForSide:
+                case CubeMoveTurns.AntiCornerUp:
                     return new Vector3(0, -90, 0);
-                case CubeMoveTurns.AntiDownForSide:
+                case CubeMoveTurns.AntiCornerDown:
                     return new Vector3(0, 90, 0);
-                case CubeMoveTurns.AntiLeftForSide:
+                case CubeMoveTurns.AntiCornerLeft:
                     return new Vector3(0, 0, 90);
-                case CubeMoveTurns.AntiRightForSide:
+                case CubeMoveTurns.AntiCornerRight:
                     return new Vector3(0, 0, -90);
-                case CubeMoveTurns.AntiBackForSide:
+                case CubeMoveTurns.AntiCornerBack:
                     return new Vector3(-90, 0, 0);
-                case CubeMoveTurns.AntiFrontForSide:
+                case CubeMoveTurns.AntiCornerFront:
                     return new Vector3(90, 0, 0);
             }
 
