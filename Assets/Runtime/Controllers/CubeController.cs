@@ -1,29 +1,35 @@
 ﻿using Assets.Runtime.Enums;
+
 using System.Collections.Generic;
+
 using UnityEngine;
+
 using VContainer.Unity;
+
 using Assets.Runtime.Configs;
 using Assets.Runtime.Views;
+
 using DG.Tweening;
+
 using Cysharp.Threading.Tasks;
+
 using System.Threading;
 using System;
 using System.Linq;
-
-using Object = UnityEngine.Object;
 
 namespace Assets.Runtime.Controllers
 {
     public class CubeController : ITickable, IStartable, IDisposable, IAsyncStartable
     {
-        private const int CentreOfCubeIndex = 13;
         private const float _mouseSpeed = 4f;
 
         private readonly List<CubeView> _cubeList;
         private readonly GameObject _parentCube;
+        private readonly LifetimeScope _scope;
         private readonly UiButtonsContainer _buttons;
         private readonly int _numberForRandom;
-        private readonly GameObject _objectJoin;
+        
+        private GameObject _objectJoin;
 
         private List<CubeMoveTurns> _savedTurns = new List<CubeMoveTurns>();
 
@@ -36,17 +42,21 @@ namespace Assets.Runtime.Controllers
 
         private Sequence _activeSequence;
 
-        public CubeController(List<CubeView> cubeList, GameObject parentCube, CubeVisualConfig cubeVisual, UiButtonsContainer buttons, GameObject objectJoin)
+        public CubeController(List<CubeView> cubeList, GameObject parentCube, CubeVisualConfig cubeVisual, UiButtonsContainer buttons, LifetimeScope scope)
         {
             _cubeList = cubeList;
             _parentCube = parentCube;
+            _scope = scope;
             _numberForRandom = cubeVisual.Turn;
             _buttons = buttons;
-            _objectJoin = objectJoin;
         }
 
         public void Start()
         {
+            _objectJoin = new GameObject();
+            
+            _objectJoin.transform.SetParent(_scope.transform);
+            
             _buttons.RandomButton.onClick.AddListener(RandomTurnForButton);
             _buttons.ReverseButton.onClick.AddListener(CubeReverseButton);
             _buttons.StartRotate.onClick.AddListener(RotateWholeCube);
@@ -260,18 +270,20 @@ namespace Assets.Runtime.Controllers
             {
                 cube.gameObject.transform.SetParent(_objectJoin.transform);
             }
-
-            await _objectJoin.transform.DOLocalRotate(cubeMoveTurn.MoveTurnToVector(), 0.5f, RotateMode.Fast);
-
+            
             if (savedTurn)
             {
                 _savedTurns.Add(cubeMoveTurn);
             }
 
+            await _objectJoin.transform.DOLocalRotate(cubeMoveTurn.MoveTurnToVector(), 0.5f, RotateMode.Fast);
+            
             foreach (var cubeInParent in cubeListSide)
             {
                 cubeInParent.gameObject.transform.SetParent(_parentCube.transform);
             }
+
+            _objectJoin.transform.localEulerAngles = Vector3.zero;
 
             _turnRecharge = true;
         }
@@ -308,6 +320,7 @@ namespace Assets.Runtime.Controllers
                 case CubeSide.BackSide:
                     return _cubeList.Where(x => x.Sides.Contains(CubeSide.BackSide)).ToList();
             }
+
             return null;
         }
     }

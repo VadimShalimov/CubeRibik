@@ -14,7 +14,6 @@ namespace Assets.Runtime.Core
         private readonly CubeVisualConfig _visualConfig;
         private readonly GameObject _cubeParent;
 
-        private GameObject _objectJoin;
         public StartUp(LifetimeScope lifetimeScope, CubeVisualConfig visualConfig, GameObject cubeParent)
         {
             _lifetimeScope = lifetimeScope;
@@ -35,17 +34,13 @@ namespace Assets.Runtime.Core
                         var cubeView = cube.AddComponent<CubeView>();
                         cubeList.Add(cubeView);
                     }
-
-            _objectJoin = new GameObject();
-            _objectJoin.transform.position = _lifetimeScope.transform.position;
-            _objectJoin.transform.SetParent(_lifetimeScope.transform);
+            
 
             _lifetimeScope.CreateChild(builder =>
             {
-                builder.RegisterEntryPoint<CameraController>();
                 builder.RegisterInstance(cubeList);
+                builder.RegisterEntryPoint<CameraController>();
                 builder.RegisterEntryPoint<CubeController>();
-                builder.RegisterComponent(_objectJoin);
             });
         }
     }
