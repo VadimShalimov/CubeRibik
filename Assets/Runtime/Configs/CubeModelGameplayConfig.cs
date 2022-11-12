@@ -24,6 +24,16 @@ namespace Assets.Runtime.Configs
 #if UNITY_EDITOR
         private void OnValidate()
         {
+            if (_xzDimensionalLength < 3)
+            {
+                _xzDimensionalLength = 3;
+            }
+
+            if (_yDimensionalLength < 1)
+            {
+                _yDimensionalLength = 1;
+            }
+            
             if (_sidesConfigs.Length == 0)
             {
                 _sidesConfigs = GenerateStartConfig();
