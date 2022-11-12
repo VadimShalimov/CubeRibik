@@ -12,5 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f034c7c2919b4058ae61f06cbacd38d1, type: 3}
   m_Name: CubeModelGameplayConfig
   m_EditorClassIdentifier: 
-  _sidesConfigs: []
-  _sideLenght: 0
+  _sidesConfigs:
+  - _cubeSide: 0
+    _sideStartColor: 4
+    _colorsArray: 040000000400000004000000040000000400000004000000
+  - _cubeSide: 2
+    _sideStartColor: 3
+    _colorsArray: 030000000300000003000000030000000300000003000000
+  - _cubeSide: 3
+    _sideStartColor: 2
+    _colorsArray: 020000000200000002000000020000000200000002000000
+  - _cubeSide: 4
+    _sideStartColor: 1
+    _colorsArray: 010000000100000001000000010000000100000001000000
+  - _cubeSide: 5
+    _sideStartColor: 5
+    _colorsArray: 050000000500000005000000050000000500000005000000
+  - _cubeSide: 1
+    _sideStartColor: 0
+    _colorsArray: 000000000000000000000000000000000000000000000000
+  _sideLenght: 3
