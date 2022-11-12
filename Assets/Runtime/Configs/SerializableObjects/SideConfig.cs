@@ -11,6 +11,8 @@ namespace Assets.Runtime.Configs.SerializableObjects
     [Serializable]
     public class SideConfig
     {
+        public Side CubeSide => _cubeSide;
+        
         public CubeColors[] ColorsArray { get; private set; }
         
         [SerializeField] [ReadOnly] private Side _cubeSide;
@@ -24,9 +26,9 @@ namespace Assets.Runtime.Configs.SerializableObjects
             _sideStartColor = cubeColor;
         }
 
-        public void SetArrayLength(int length)
+        public void SetArrayLength(int xLength, int yLength)
         {
-            ColorsArray = new CubeColors[length * 2];
+            ColorsArray = new CubeColors[xLength * yLength];
 
             for (int i = 0; i < ColorsArray.Length; i++)
             {
