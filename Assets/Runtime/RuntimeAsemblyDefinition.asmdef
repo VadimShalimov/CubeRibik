@@ -1,0 +1,18 @@
+{
+    "name": "RuntimeAsemblyDefinition",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ab3c05f55307988498bbb705d47066b8",
+        "VContainer",
+        "VContainer.Editor"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
