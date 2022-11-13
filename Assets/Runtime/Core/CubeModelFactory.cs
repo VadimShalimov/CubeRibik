@@ -27,10 +27,10 @@ namespace Runtime.Core
             
             var sidesStartIndexes = new List<int[]>(4)
             {
-                GetSideIndexes(upperSideModel.CubeIndexes),
-                GetSideIndexes(upperSideModel.CubeIndexes, true ,_gameplayConfig.CubeSizeVector.x - 1),
-                GetSideIndexes(upperSideModel.CubeIndexes.Skip(_gameplayConfig.CubeSizeVector.x * 2).ToArray(), false),
-                GetSideIndexes(upperSideModel.CubeIndexes, false),
+                GetSideIndexes(upperSideModel.PanelModel.CubeIndexes),
+                GetSideIndexes(upperSideModel.PanelModel.CubeIndexes, true ,_gameplayConfig.CubeSizeVector.x - 1),
+                GetSideIndexes(upperSideModel.PanelModel.CubeIndexes.Skip(_gameplayConfig.CubeSizeVector.x * 2).ToArray(), false),
+                GetSideIndexes(upperSideModel.PanelModel.CubeIndexes, false),
             };
 
             for (var index = 1; index < _gameplayConfig.SideConfigs.Length - 1; index++)

@@ -1,5 +1,3 @@
-using Assets.Runtime.Configs.SerializableObjects;
-
 namespace Runtime.Models
 {
     public class CubeModel
