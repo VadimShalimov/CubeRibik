@@ -1,5 +1,3 @@
-using Assets.Runtime.Configs;
-
 using Runtime.Core;
 
 using VContainer.Unity;
