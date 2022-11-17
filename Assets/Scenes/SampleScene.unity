@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -229,16 +229,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 59273660}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e6532da82963ce4d95f0e22059db8cd, type: 3}
+  m_Script: {fileID: 11500000, guid: 15923b54888b4e94b3dacf261eb8bb27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   parentReference:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
-  _cubeConfig: {fileID: 11400000, guid: 9590b627d181d904bb830a75cd7d5d33, type: 2}
-  _cubeParent: {fileID: 804091905}
-  _buttons: {fileID: 1020479392}
+  _cubeModelGameplayConfig: {fileID: 11400000, guid: 8ffc2fda58a76d842b0db5476e648e41,
+    type: 2}
+  _cubeVisualConfig: {fileID: 11400000, guid: 9590b627d181d904bb830a75cd7d5d33, type: 2}
 --- !u!4 &59273662
 Transform:
   m_ObjectHideFlags: 0
@@ -976,10 +976,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61c19f4e649e9014dbf8b57dab9068f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _randomButton: {fileID: 1216594944}
-  _reverseButton: {fileID: 486255188}
-  _startRotate: {fileID: 486565350}
-  _stopRotate: {fileID: 1421384702}
 --- !u!1 &1216594942
 GameObject:
   m_ObjectHideFlags: 0

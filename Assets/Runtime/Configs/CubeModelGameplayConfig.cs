@@ -1,8 +1,10 @@
 using Assets.Runtime.Configs.SerializableObjects;
 
+using EasyButtons;
+
 using Runtime.Enums;
 
-using Unity.Collections;
+using UnityEditor;
 
 using UnityEngine;
 
@@ -15,7 +17,7 @@ namespace Assets.Runtime.Configs
         
         public Vector2Int CubeSizeVector => new Vector2Int(_xzDimensionalLength, _yDimensionalLength);
         
-        [SerializeField] [ReadOnly] private SideConfig[] _sidesConfigs;
+        [SerializeField] [Unity.Collections.ReadOnly] private SideConfig[] _sidesConfigs;
         
         [SerializeField] private int _xzDimensionalLength = 3;
 
@@ -64,6 +66,15 @@ namespace Assets.Runtime.Configs
                 new SideConfig(Side.BackSide, CubeColors.Orange),
                 new SideConfig(Side.DownSide, CubeColors.Yellow),
             };
+        }
+
+        [Button]
+        private void RunGame()
+        {
+            if (!EditorApplication.isPlaying)
+            {
+                EditorApplication.EnterPlaymode();
+            }
         }
 #endif
     }
