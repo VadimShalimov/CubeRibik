@@ -1,3 +1,6 @@
+using Runtime.Enums;
+using UnityEngine;
+
 namespace Runtime.Models
 {
     public class CubeModel
@@ -14,6 +17,11 @@ namespace Runtime.Models
             {
                 cubeMatrixLength += sideData.MatrixLength;
             }
+        }
+
+        public void RotateModel(Side rotatingSide, bool directionCondition)
+        {
+            Debug.Log($"target Side{rotatingSide} and direction condition{directionCondition}");
         }
     }
 }
