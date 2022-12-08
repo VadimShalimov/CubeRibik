@@ -5,11 +5,15 @@ namespace Runtime.Models
 {
     public class CubeModel
     {
+        public Vector2 CubeLenght => _cubeLenght;
+        
         private readonly SideModel[] _sidesData;
-
-        public CubeModel(SideModel[] sidesData)
+        private Vector2 _cubeLenght;
+        
+        public CubeModel(SideModel[] sidesData, Vector2 cubeLenght)
         {
             _sidesData = sidesData;
+            _cubeLenght = cubeLenght;
 
             var cubeMatrixLength = 0;
 

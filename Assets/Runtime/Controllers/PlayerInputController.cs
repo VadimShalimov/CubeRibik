@@ -17,7 +17,7 @@ namespace Runtime.Controllers
         {
             if (Input.GetKeyDown(KeyCode.W))
             {
-               _inputModel.InvokeVerticalSideChange(1); 
+               _inputModel.InvokeVerticalSideChange(-1); 
             }
             if (Input.GetKeyDown(KeyCode.A))
             {
@@ -25,7 +25,7 @@ namespace Runtime.Controllers
             }
             if (Input.GetKeyDown(KeyCode.S))
             {
-                _inputModel.InvokeVerticalSideChange(-1);
+                _inputModel.InvokeVerticalSideChange(1);
             }
             if (Input.GetKeyDown(KeyCode.D))
             {
