@@ -4,23 +4,45 @@ namespace Runtime.Models
 {
     public class InputModel
     {
+        public bool AvailableToInput { get; private set; }
+        
         public event Action<int> HorizontalSideChanged;
         public event Action<int> VerticalSideChanged;
         public event Action<bool> RotateAction;
 
+        public void EnableInputFilter()
+        {
+            AvailableToInput = true;
+        }
+
+        public void DisableInputFilter()
+        {
+            AvailableToInput = false;
+        }
+
         public void InvokeHorizontalSideChange(int value)
         {
-            HorizontalSideChanged?.Invoke(value);
+            InvokeActionIfPermitted(HorizontalSideChanged, value);
         }
         
         public void InvokeVerticalSideChange(int value)
         {
-            VerticalSideChanged?.Invoke(value);
+            InvokeActionIfPermitted(VerticalSideChanged,value);
         }
 
         public void InvokeRotateAction(bool defaultRotateState = false)
         {
-            RotateAction?.Invoke(defaultRotateState);
+            InvokeActionIfPermitted(RotateAction, defaultRotateState);
+        }
+
+        private void InvokeActionIfPermitted<T>(Action<T> action,T genericValue)
+        {
+            if (!AvailableToInput)
+            {
+                return;
+            }
+            
+            action?.Invoke(genericValue);
         }
     }
 }
