@@ -3,9 +3,11 @@
     "rootNamespace": "",
     "references": [
         "GUID:ab3c05f55307988498bbb705d47066b8",
-        "VContainer",
-        "VContainer.Editor",
-        "EasyButtons"
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:7bce08a00b4d54cd694096abadbb897e",
+        "GUID:f24cf67903b27ae498b3069ecc30cc11",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:029c1c1b674aaae47a6841a0b89ad80e"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -13,7 +15,9 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "UNITASK_DOTWEEN_SUPPORT"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }
