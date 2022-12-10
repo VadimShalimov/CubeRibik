@@ -23,9 +23,9 @@ namespace Runtime.Models
             }
         }
 
-        public void RotateModel(Side rotatingSide, bool directionCondition)
+        public void RotateModel(Side rotatingSide, bool directionCondition, int deep)
         {
-            Debug.Log($"target Side{rotatingSide} and direction condition{directionCondition}");
+            Debug.Log($"target Side{rotatingSide} and direction condition{directionCondition} with {deep}");
         }
     }
 }

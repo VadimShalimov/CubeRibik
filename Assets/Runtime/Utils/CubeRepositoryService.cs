@@ -14,9 +14,9 @@ namespace Runtime.Utils
             _cubeModel = cubeModel;
         }
 
-        public void RotateCubeModel(Side targetSide, bool directionCondition)
+        public void RotateCubeModel(Side targetSide, bool directionCondition, int deep)
         {
-            _cubeModel.RotateModel(targetSide, directionCondition);
+            _cubeModel.RotateModel(targetSide, directionCondition, deep);
         }
 
         public Vector2 GetCubeSize()

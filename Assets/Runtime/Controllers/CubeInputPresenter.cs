@@ -16,13 +16,12 @@ namespace Runtime.Controllers
         private Vector2 _cubeSize;
         private int _x;
         private int _y;
+        private int _deep;
         
-
         public CubeInputPresenter(InputModel inputModel, CubeRepositoryService cubeRepositoryService)
         {
             _inputModel = inputModel;
             _cubeRepositoryService = cubeRepositoryService;
-            
         }
 
         public void Initialize()
@@ -66,20 +65,20 @@ namespace Runtime.Controllers
 
             if (os <= size % 2)
             {
+                _deep = os;
+                
                 _currentSide = side;
-                Debug.Log(nameof(HandleSideChanged) + ": " + os + _currentSide);
 
                 return;
             }
-            
+
+            _deep = ((int)size - os) + 1;
             _currentSide = antiSide;
-            
-            Debug.Log(nameof(HandleSideChanged) + ": " + os + _currentSide);
         }
 
         private void HandleRotateAction(bool condition)
         {
-            _cubeRepositoryService.RotateCubeModel(Side.RightSide, condition);
+            _cubeRepositoryService.RotateCubeModel(_currentSide, condition, _deep);
         }
     }
 }
