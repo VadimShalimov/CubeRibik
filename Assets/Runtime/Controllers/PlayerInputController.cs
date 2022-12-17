@@ -40,6 +40,16 @@ namespace Runtime.Controllers
             {
                 _inputModel.InvokeRotateAction(true);
             }
+            
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                _inputModel.InvokeZSideChange(-1);
+            }
+            
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                _inputModel.InvokeZSideChange(1);
+            }
         }
     }
 }

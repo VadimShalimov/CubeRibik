@@ -5,11 +5,11 @@ using Runtime.Models;
 
 namespace Runtime.Utils
 {
-    public class RotationHelper
+    public class ModelRotationHelper
     {
         private readonly CubeModel _cubeModel;
 
-        public RotationHelper(CubeModel cubeModel)
+        public ModelRotationHelper(CubeModel cubeModel)
         {
             _cubeModel = cubeModel;
         }

@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 
 using Cysharp.Threading.Tasks;
@@ -31,6 +32,7 @@ namespace Runtime.Controllers
         public async UniTask StartAsync(CancellationToken cancellation)
         {
             var viewArray = await _viewFactory.CreateViewsAsync();
+            _cubeRepositoryService.AddCubeViews(viewArray.ToArray());
         }
     }
 }

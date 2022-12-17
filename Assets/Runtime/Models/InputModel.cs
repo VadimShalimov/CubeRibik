@@ -8,6 +8,7 @@ namespace Runtime.Models
         
         public event Action<int> HorizontalSideChanged;
         public event Action<int> VerticalSideChanged;
+        public event Action<int> ZSideChanged;
         public event Action<bool> RotateAction;
 
         public void EnableInputFilter()
@@ -29,7 +30,12 @@ namespace Runtime.Models
         {
             InvokeActionIfPermitted(VerticalSideChanged,value);
         }
-
+        
+        public void InvokeZSideChange(int value)
+        {
+            InvokeActionIfPermitted(ZSideChanged,value);
+        }
+        
         public void InvokeRotateAction(bool defaultRotateState = false)
         {
             InvokeActionIfPermitted(RotateAction, defaultRotateState);
