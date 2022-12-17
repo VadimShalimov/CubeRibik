@@ -13,9 +13,12 @@ namespace Runtime.Controllers
         private readonly CubeRepositoryService _cubeRepositoryService;
 
         private Side _currentSide;
+        
         private Vector2 _cubeSize;
+        
         private int _x;
         private int _y;
+        
         private int _deep;
         
         public CubeInputPresenter(InputModel inputModel, CubeRepositoryService cubeRepositoryService)
@@ -48,32 +51,32 @@ namespace Runtime.Controllers
         {
             HandleSideChanged(obj,ref _x, _cubeSize.x, Side.LeftSide, Side.RightSide);
         }
-        
-        private void HandleSideChanged(int count, ref int os, float size, Side side, Side antiSide)
+
+        private void HandleSideChanged(int valueAmount, ref int axisValue, float axisLength, Side firstSide, Side secondSide)
         {
-            os += count;
+            axisValue += valueAmount;
             
-            if (os > size)
+            if (axisValue > axisLength)
             {
-                os = 1;
+                axisValue = 1;
             }
 
-            if (os < 1)
+            if (axisValue < 1)
             {
-                os = (int)size;
+                axisValue = (int)axisLength;
             }
 
-            if (os <= size % 2)
+            if (axisValue <= axisLength % 2)
             {
-                _deep = os;
+                _deep = axisValue;
                 
-                _currentSide = side;
+                _currentSide = firstSide;
 
                 return;
             }
 
-            _deep = ((int)size - os) + 1;
-            _currentSide = antiSide;
+            _deep = ((int)axisLength - axisValue) + 1;
+            _currentSide = secondSide;
         }
 
         private void HandleRotateAction(bool condition)
