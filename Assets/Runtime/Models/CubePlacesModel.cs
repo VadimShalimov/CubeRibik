@@ -18,12 +18,17 @@ namespace Runtime.Models
             _sideLength = sideLength;
             CubeIndexes = cubeIndexes;
         }
-
+        
         public void ReplaceIndexes(IReadOnlyList<ReplaceableValue<int>> replaceableValues)
         {
             for (var index = 0; index < CubeIndexes.Length; index++)
             {
                 var replaceableValue = replaceableValues.FirstOrDefault(x => x.OldValue.Equals(CubeIndexes[index]));
+
+                if (!replaceableValue.OldValue.Equals(CubeIndexes[index]))
+                {
+                    continue;
+                }
 
                 CubeIndexes[index] = replaceableValue.NewValue;
             }
@@ -36,7 +41,7 @@ namespace Runtime.Models
                 GetSideIndexes(false),
                 GetSideIndexes(true, _sideLength.x - 1),
                 GetSideIndexes(),
-                GetSideIndexes(false, _sideLength.x * _sideLength.y - 1)
+                GetSideIndexes(false, _sideLength.x * (_sideLength.y - 1))
 
             };
         } 
@@ -57,14 +62,16 @@ namespace Runtime.Models
             else
             {
                 var indexes = new List<int> {startIndex};
-                
-                for (int i = indexes.First(); i < CubeIndexes.Length - 1; i++)
-                {
-                    indexes.Add(i);
-                }
-            }
 
-            return null;
+                var startValue = indexes.First();
+                
+                for (int i = 1; i < _sideLength.x; i++)
+                {
+                    indexes.Add(startValue + i);
+                }
+
+                return indexes.ToArray();
+            }
         }
     }
 }
