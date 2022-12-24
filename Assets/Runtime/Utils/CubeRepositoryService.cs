@@ -39,7 +39,7 @@ namespace Runtime.Utils
                 cubeList.Add(_gameObjects[cubeIndex]);
             }
             
-            _viewRotationHelper.RotateSideAsync(cubeList.ToArray(), RotateDirection.Up).Forget();
+            _viewRotationHelper.RotateSideAsync(cubeList.ToArray(), targetSide.GetRotateDirection(directionCondition)).Forget();
             Debug.Log(targetSide);
             _modelRotationHelper.RotateCubeModel(targetSide, directionCondition, deep);
         }

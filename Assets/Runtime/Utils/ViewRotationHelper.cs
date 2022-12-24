@@ -30,7 +30,7 @@ namespace Runtime.Utils
                 cube.transform.SetParent(_rotationRoot.transform);
             }
 
-            _activeTween = _rotationRoot.transform.DORotate(Vector3.up * 90, 0.5f, RotateMode.LocalAxisAdd);
+            _activeTween = _rotationRoot.transform.DORotate(direction.GetRotateDirection(), 0.5f, RotateMode.LocalAxisAdd);
             await _activeTween.WithCancellation(_animationTokenSource.Token);
 
             foreach (var cube in cubes)
