@@ -28,25 +28,15 @@ namespace Runtime.Utils
 
             var sideIndexes = mainSide.PanelModel.GetSidesIndexes();
 
+            var sideMatrix = ArrayToMatrix(mainSide.PanelModel.CubeIndexes);
+
             if (rotateCondition)
             {
-                WriteReplaceableData(ref replaceableValues, sideIndexes, 0, 2, true);
-                
-                WriteReplaceableData(ref replaceableValues, sideIndexes, 1, 0);
-                
-                WriteReplaceableData(ref replaceableValues, sideIndexes, 3, 1, true, 1);
-
-                WriteReplaceableData(ref replaceableValues, sideIndexes, 2, 3, false, 1);
+                RotateMatrixClockwise(sideMatrix, ref replaceableValues);
             }
             else
             {
-                WriteReplaceableData(ref replaceableValues, sideIndexes, 2, 0, true);
-                
-                WriteReplaceableData(ref replaceableValues, sideIndexes, 3, 2);
-                
-                WriteReplaceableData(ref replaceableValues, sideIndexes, 1, 3, true, 1);
-
-                WriteReplaceableData(ref replaceableValues, sideIndexes, 0, 1, false, 1);
+                RotateMatrixAntiClockwise(sideMatrix, ref replaceableValues);
             }
             
             mainSide.PanelModel.ReplaceIndexes(replaceableValues);
@@ -57,29 +47,57 @@ namespace Runtime.Utils
             }
         }
 
-        private void WriteReplaceableData(ref List<ReplaceableValue<int>> replaceableValues, int[][] sideIndexes,
-            int startIndexSide, int lastIndexSide, bool reversible = false, int offset = 0)
+        private void RotateMatrixClockwise(int[,] oldMatrix, ref List<ReplaceableValue<int>> replaceableValues)
         {
-            if (reversible)
+            int newColumn, newRow = 0;
+            for (int oldColumn = oldMatrix.GetLength(1) - 1; oldColumn >= 0; oldColumn--)
             {
-                for (var i = 0; i < sideIndexes[startIndexSide].Length - 1; i++)
+                newColumn = 0;
+                for (int oldRow = 0; oldRow < oldMatrix.GetLength(0); oldRow++)
                 {
-                    var mainValue = sideIndexes[startIndexSide][i + offset];
-                    var replaceValue = sideIndexes[lastIndexSide][sideIndexes[3].Length - 1 - i - offset];
+                    var newValue = oldMatrix[newRow, newColumn];
+                    var oldValue = oldMatrix[oldRow, oldColumn];
+                    replaceableValues.Add(new ReplaceableValue<int>(oldValue, newValue));
+                    newColumn++;
+                }
+                newRow++;
+            }
+        }
+        
+        private void RotateMatrixAntiClockwise(int[,] oldMatrix, ref List<ReplaceableValue<int>> replaceableValues)
+        {
+            int newColumn, newRow = 0;
+            for (int oldColumn = 0; oldColumn < oldMatrix.GetLength(0) - 1; oldColumn++)
+            {
+                newColumn = 0;
+                for (int oldRow = oldMatrix.GetLength(1) - 1 ; oldRow < 0 ; oldRow--)
+                {
+                    var newValue = oldMatrix[newRow, newColumn];
+                    var oldValue = oldMatrix[oldRow, oldColumn];
+                    replaceableValues.Add(new ReplaceableValue<int>(oldValue, newValue));
+                    newColumn++;
+                }
+                newRow++;
+            }
+        }
 
-                    replaceableValues.Add(new ReplaceableValue<int>(mainValue, replaceValue));
+        private int[,] ArrayToMatrix(int[] array)
+        {
+            var matrix = new int[_cubeModel.CubeLenght.x, _cubeModel.CubeLenght.y];
+
+            var arrayIndex = 0;
+
+            for (int i = 0; i < _cubeModel.CubeLenght.y; i++)
+            {
+                for (int j = 0; j < _cubeModel.CubeLenght.x; j++)
+                {
+                    matrix[i, j] = array[arrayIndex];
+
+                    arrayIndex++;
                 }
             }
-            else
-            {
-                for (var i = 0; i < sideIndexes[startIndexSide].Length - 1; i++)
-                {
-                    var mainValue = sideIndexes[startIndexSide][i + offset];
-                    var replaceValue = sideIndexes[lastIndexSide][i + offset];
 
-                    replaceableValues.Add(new ReplaceableValue<int>(mainValue, replaceValue));
-                }
-            }
+            return matrix;
         }
     }
 }
