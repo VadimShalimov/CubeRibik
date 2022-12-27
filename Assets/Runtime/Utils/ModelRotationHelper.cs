@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Runtime.Enums;
 using Runtime.Models;
 
+using UnityEngine;
+
 namespace Runtime.Utils
 {
     public class ModelRotationHelper
@@ -25,8 +27,6 @@ namespace Runtime.Utils
         private void RotateMainSide(SideModel mainSide, bool rotateCondition)
         {
             var replaceableValues = new List<ReplaceableValue<int>>();
-
-            var sideIndexes = mainSide.PanelModel.GetSidesIndexes();
 
             var sideMatrix = ArrayToMatrix(mainSide.PanelModel.CubeIndexes);
 
@@ -57,7 +57,9 @@ namespace Runtime.Utils
                 {
                     var newValue = oldMatrix[newRow, newColumn];
                     var oldValue = oldMatrix[oldRow, oldColumn];
+                    
                     replaceableValues.Add(new ReplaceableValue<int>(oldValue, newValue));
+                    
                     newColumn++;
                 }
                 newRow++;
@@ -67,14 +69,16 @@ namespace Runtime.Utils
         private void RotateMatrixAntiClockwise(int[,] oldMatrix, ref List<ReplaceableValue<int>> replaceableValues)
         {
             int newColumn, newRow = 0;
-            for (int oldColumn = 0; oldColumn < oldMatrix.GetLength(0) - 1; oldColumn++)
+            for (int oldColumn = 0; oldColumn < oldMatrix.GetLength(1); oldColumn++)
             {
                 newColumn = 0;
-                for (int oldRow = oldMatrix.GetLength(1) - 1 ; oldRow < 0 ; oldRow--)
+                for (int oldRow = oldMatrix.GetLength(1) - 1 ; oldRow >= 0 ; oldRow--)
                 {
                     var newValue = oldMatrix[newRow, newColumn];
                     var oldValue = oldMatrix[oldRow, oldColumn];
+                    
                     replaceableValues.Add(new ReplaceableValue<int>(oldValue, newValue));
+                    
                     newColumn++;
                 }
                 newRow++;

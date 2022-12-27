@@ -33,45 +33,5 @@ namespace Runtime.Models
                 CubeIndexes[index] = replaceableValue.NewValue;
             }
         }
-
-        public int[][] GetSidesIndexes()
-        {
-            return new[]
-            {
-                GetSideIndexes(false),
-                GetSideIndexes(true, _sideLength.x - 1),
-                GetSideIndexes(),
-                GetSideIndexes(false, _sideLength.x * (_sideLength.y - 1))
-
-            };
-        } 
-        
-        private int[] GetSideIndexes(bool isDefaultPattern = true, int startIndex = 0)
-        {
-            if (isDefaultPattern)
-            {
-                var indexes = new List<int> {startIndex};
-
-                for (int i = 0; i < _sideLength.x - 1; i++)
-                {
-                    indexes.Add(indexes[i] + _sideLength.x);
-                }
-
-                return indexes.ToArray();
-            }
-            else
-            {
-                var indexes = new List<int> {startIndex};
-
-                var startValue = indexes.First();
-                
-                for (int i = 1; i < _sideLength.x; i++)
-                {
-                    indexes.Add(startValue + i);
-                }
-
-                return indexes.ToArray();
-            }
-        }
     }
 }

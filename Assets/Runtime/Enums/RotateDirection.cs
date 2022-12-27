@@ -27,9 +27,9 @@ namespace Runtime.Enums
                 case RotateDirection.ZLeft:
                     return Vector3.forward * 90;
                 case RotateDirection.Up:
-                    return Vector3.right * 90;
-                case RotateDirection.Down:
                     return Vector3.left * 90;
+                case RotateDirection.Down:
+                    return Vector3.right * 90;
                 
             }
             return default;
