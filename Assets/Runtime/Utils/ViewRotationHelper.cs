@@ -1,31 +1,47 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 
 using Cysharp.Threading.Tasks;
 
 using DG.Tweening;
 
 using Runtime.Enums;
+using Runtime.Utils.Extensions;
 
 using UnityEngine;
 
 namespace Runtime.Utils
 {
-    public class ViewRotationHelper
+    public class ViewRotationHelper : IDisposable
     {
-        private readonly CancellationTokenSource _animationTokenSource = new CancellationTokenSource();
+        private const float RotateDuration = 0.5f;
 
         private readonly GameObject _rotationRoot;
 
         private Tween _activeTween;
+
+        private CancellationTokenSource _animationTokenSource = new CancellationTokenSource();
 
         public ViewRotationHelper()
         {
             _rotationRoot = new GameObject();
         }
 
-        public async UniTask RotateSideAsync(GameObject[] cubes, RotateDirection direction)
+        public void Dispose()
         {
-            var indexCentre = cubes.Length / 2;
+            _activeTween.KillActive();
+
+            CtsExtensions.CancelToken(ref _animationTokenSource);
+        }
+
+        public async UniTask RotateSideAsync(GameObject[] cubes, RotateDirection direction, int deep)
+        {
+            if (_activeTween.IsActive())
+            {
+                return;
+            }
+
+            var indexCentre = (cubes.Length / deep) / 2;
             var cubeParent = cubes[indexCentre].transform.parent;
 
             _rotationRoot.transform.position = cubes[indexCentre].transform.position;
@@ -35,8 +51,12 @@ namespace Runtime.Utils
                 cube.transform.SetParent(_rotationRoot.transform);
             }
 
+            _activeTween.KillActive();
+
             _activeTween =
-                _rotationRoot.transform.DOLocalRotate(direction.GetRotateDirection(), 0.5f, RotateMode.WorldAxisAdd);
+                _rotationRoot.transform.DOLocalRotate(direction.GetRotateDirection(), RotateDuration,
+                    RotateMode.WorldAxisAdd);
+
             await _activeTween.WithCancellation(_animationTokenSource.Token);
 
             foreach (var cube in cubes)
