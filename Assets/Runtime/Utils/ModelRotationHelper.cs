@@ -14,71 +14,96 @@ namespace Runtime.Utils
             _cubeModel = cubeModel;
         }
 
-        public void RotateCubeModel(Side side, bool rotateCondition, int nestedSidesDeep)
+        public void RotateCubeModel(Side side, bool rotateCondition, int sidesDeep)
         {
             var targetSide = _cubeModel.GetSideModel(side);
 
-            RotateMainSide(targetSide, rotateCondition);
+            for (int i = 1; i < sidesDeep + 1; i++)
+            {
+                RotateSide(targetSide, rotateCondition, i);
+            }
         }
 
-        //fixed attached indexes bug
-        private void RotateMainSide(SideModel mainSide, bool rotateCondition)
+        private void RotateSide(SideModel sideModel, bool rotateCondition, int deep)
         {
             var replaceableValues = new List<ReplaceableValue<int>>();
 
-            var sideIndexes = mainSide.PanelModel.GetSidesIndexes();
+            var placesModel = deep <= 1 ? sideModel.PanelModel : sideModel.AttachedPanelModels[deep - 2];
 
-            var sideMatrix = ArrayToMatrix(mainSide.PanelModel.CubeIndexes);
+            var sideMatrix = ArrayToMatrix(placesModel.CubeIndexes);
 
             if (rotateCondition)
             {
-                RotateMatrixClockwise(sideMatrix, ref replaceableValues);
+                RotateMatrix(sideMatrix, ref replaceableValues,true);
             }
             else
             {
-                RotateMatrixAntiClockwise(sideMatrix, ref replaceableValues);
+                RotateMatrix(sideMatrix, ref replaceableValues, false);
             }
-            
-            mainSide.PanelModel.ReplaceIndexes(replaceableValues);
 
-            foreach (var connectedSideModel in mainSide.ConnectedSideModels)
-            {
-                connectedSideModel.PanelModel.ReplaceIndexes(replaceableValues);
-            }
+            placesModel.ReplaceIndexes(replaceableValues);
+
+            RewriteGraphs(sideModel, replaceableValues);
         }
 
-        private void RotateMatrixClockwise(int[,] oldMatrix, ref List<ReplaceableValue<int>> replaceableValues)
+        private void RotateMatrix(int[,] matrix, ref List<ReplaceableValue<int>> replaceableValues,
+            bool rotateCondition)
         {
-            int newColumn, newRow = 0;
-            for (int oldColumn = oldMatrix.GetLength(1) - 1; oldColumn >= 0; oldColumn--)
+            var newRow = 0;
+            var newColumn = 0;
+
+            if (rotateCondition)
             {
-                newColumn = 0;
-                for (int oldRow = 0; oldRow < oldMatrix.GetLength(0); oldRow++)
+                for (int oldColumn = matrix.GetLength(1) - 1; oldColumn >= 0; oldColumn--)
                 {
-                    var newValue = oldMatrix[newRow, newColumn];
-                    var oldValue = oldMatrix[oldRow, oldColumn];
-                    replaceableValues.Add(new ReplaceableValue<int>(oldValue, newValue));
-                    newColumn++;
+                    newColumn = 0;
+                    for (int oldRow = 0; oldRow < matrix.GetLength(0); oldRow++)
+                    {
+                        AddReplaceableData(matrix, newRow, newColumn, oldRow, oldColumn, ref replaceableValues);
+
+                        newColumn++;
+                    }
+
+                    newRow++;
                 }
-                newRow++;
+            }
+            else
+            {
+                for (int oldColumn = 0; oldColumn < matrix.GetLength(1); oldColumn++)
+                {
+                    newColumn = 0;
+                    for (int oldRow = matrix.GetLength(1) - 1; oldRow >= 0; oldRow--)
+                    {
+                        AddReplaceableData(matrix, newRow, newColumn, oldRow, oldColumn, ref replaceableValues);
+                        
+                        newColumn++;
+                    }
+
+                    newRow++;
+                }
             }
         }
         
-        private void RotateMatrixAntiClockwise(int[,] oldMatrix, ref List<ReplaceableValue<int>> replaceableValues)
+        private void RewriteGraphs(SideModel mainSide, IReadOnlyList<ReplaceableValue<int>> replaceableValues)
         {
-            int newColumn, newRow = 0;
-            for (int oldColumn = 0; oldColumn < oldMatrix.GetLength(0) - 1; oldColumn++)
+            foreach (var connectedSideModel in mainSide.ConnectedSideModels)
             {
-                newColumn = 0;
-                for (int oldRow = oldMatrix.GetLength(1) - 1 ; oldRow < 0 ; oldRow--)
+                connectedSideModel.PanelModel.ReplaceIndexes(replaceableValues);
+
+                foreach (var attachedPanelModel in connectedSideModel.AttachedPanelModels)
                 {
-                    var newValue = oldMatrix[newRow, newColumn];
-                    var oldValue = oldMatrix[oldRow, oldColumn];
-                    replaceableValues.Add(new ReplaceableValue<int>(oldValue, newValue));
-                    newColumn++;
+                    attachedPanelModel.ReplaceIndexes(replaceableValues);
                 }
-                newRow++;
             }
+        }
+
+        private void AddReplaceableData(int[,] matrix, int newRow, int newColumn, int oldRow, int oldColumn,
+            ref List<ReplaceableValue<int>> replaceableValues)
+        {
+            var newValue = matrix[newRow, newColumn];
+            var oldValue = matrix[oldRow, oldColumn];
+
+            replaceableValues.Add(new ReplaceableValue<int>(oldValue, newValue));
         }
 
         private int[,] ArrayToMatrix(int[] array)

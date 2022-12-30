@@ -45,6 +45,8 @@ namespace Runtime.Core
             
             var cubeList = new List<GameObject>();
 
+            var index = 0;
+            
             for (var y = 0; y < _gameplayConfig.CubeSizeVector.y; y++)
             for (var z = 0; z < _gameplayConfig.CubeSizeVector.x; z++)
             for (var x = 0; x < _gameplayConfig.CubeSizeVector.x; x++)
@@ -52,8 +54,11 @@ namespace Runtime.Core
                 var cube = await CreateAfterDelayAsync(cubeViewObject);
                 cube.transform.localPosition = new Vector3(x, -y, -z);
                 cubeList.Add(cube);
+                cube.name = index.ToString();
                 
                 await cube.transform.DOScale(Vector3.one, (float) _delayTime).WithCancellation(_factoryCts.Token);
+
+                index++;
             }
 
             var newCubePosition = new Vector3(cubeViewObject.transform.position.x, 

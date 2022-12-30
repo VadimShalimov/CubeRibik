@@ -1,13 +1,19 @@
 ﻿using System.Collections.Generic;
+
 using Cysharp.Threading.Tasks;
+
 using Runtime.Enums;
 using Runtime.Models;
+using Runtime.Utils;
+using Runtime.Utils.Extensions;
+
 using UnityEngine;
+
 using Vector2 = UnityEngine.Vector2;
 
-namespace Runtime.Utils
+namespace Runtime.Services
 {
-    public class CubeRepositoryService
+    public class CubeInteractionService
     {
         private CubeModel _cubeModel;
 
@@ -16,6 +22,7 @@ namespace Runtime.Utils
         private GameObject[] _gameObjects;
 
         private ViewRotationHelper _viewRotationHelper;
+
         public void AddCubeModel(CubeModel cubeModel)
         {
             _cubeModel = cubeModel;
@@ -31,15 +38,10 @@ namespace Runtime.Utils
 
         public void RotateCubeModel(Side targetSide, bool directionCondition, int deep)
         {
-            var cubeList = new List<GameObject>();
-            var cubeIndexes = _cubeModel.GetSideModel(targetSide).PanelModel.CubeIndexes;
+            var cubeIndexes = _cubeModel.GetSideModel(targetSide);
 
-            foreach (var cubeIndex in cubeIndexes)
-            {
-                cubeList.Add(_gameObjects[cubeIndex]);
-            }
-            
-            _viewRotationHelper.RotateSideAsync(cubeList.ToArray(), targetSide.GetRotateDirection(directionCondition)).Forget();
+            _viewRotationHelper.RotateSideAsync(GetCubes(cubeIndexes, deep),
+                targetSide.GetRotateDirection(directionCondition), deep).Forget();
             Debug.Log(targetSide);
             _modelRotationHelper.RotateCubeModel(targetSide, directionCondition, deep);
         }
@@ -47,6 +49,27 @@ namespace Runtime.Utils
         public Vector2 GetCubeSize()
         {
             return _cubeModel.CubeLenght;
+        }
+
+        private GameObject[] GetCubes(SideModel sideModel, int deep)
+        {
+            var cubeList = new List<GameObject>();
+
+            var indexes = new List<int>();
+
+            indexes.AddRange(sideModel.PanelModel.CubeIndexes);
+
+            for (int i = 1; i < deep; i++)
+            {
+                indexes.AddRange(sideModel.AttachedPanelModels[i - 1].CubeIndexes);
+            }
+
+            foreach (var cubeIndex in indexes)
+            {
+                cubeList.Add(_gameObjects[cubeIndex]);
+            }
+
+            return cubeList.ToArray();
         }
     }
 }

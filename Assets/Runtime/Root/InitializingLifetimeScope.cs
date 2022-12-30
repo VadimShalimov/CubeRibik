@@ -3,7 +3,7 @@ using Assets.Runtime.Configs;
 using Runtime.Controllers;
 using Runtime.Core;
 using Runtime.Models;
-using Runtime.Utils;
+using Runtime.Services;
 using Runtime.Views;
 using UnityEngine;
 
@@ -32,7 +32,7 @@ namespace Runtime.Root
             builder.RegisterComponent(_uiPlaceholderView);
 
             builder.Register<InputModel>(Lifetime.Singleton);
-            builder.Register<CubeRepositoryService>(Lifetime.Singleton);
+            builder.Register<CubeInteractionService>(Lifetime.Singleton);
             
             builder.RegisterEntryPoint<InitializingController>();
 

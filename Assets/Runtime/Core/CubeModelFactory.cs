@@ -5,6 +5,7 @@ using System.Linq;
 using Assets.Runtime.Configs;
 using Assets.Runtime.Configs.SerializableObjects;
 
+using Runtime.Enums;
 using Runtime.Models;
 
 namespace Runtime.Core
@@ -74,25 +75,24 @@ namespace Runtime.Core
                 var newSideModel =
                     new SideModel(sideConfig.CubeSide, indexes.ToArray(), _gameplayConfig.CubeSizeVector);
 
-                var nestedSides = new List<CubePlacesModel>();
-
-                if (index % 2 == 0)
+                if (_gameplayConfig.SideConfigs[index].CubeSide != Side.BackSide &&
+                    _gameplayConfig.SideConfigs[index].CubeSide != Side.FrontSide)
                 {
-                    for (var i = 0; i < xNestedSidesCount; i++)
-                    {
-                        nestedSides.Add(GenerateNestedSideModel(newSideModel.PanelModel, -1, xNestedSidesCount));
-                    }
+                    var nestedSidesArray = 
+                        GenerateNestedSides(index, xNestedSidesCount, newSideModel, -1, 1);
+
+                    sidesModelList.Add(new SideModel(newSideModel.Side, newSideModel.PanelModel.CubeIndexes,
+                        nestedSidesArray, _gameplayConfig.CubeSizeVector));
                 }
                 else
                 {
-                    for (var i = 0; i < xNestedSidesCount; i++)
-                    {
-                        nestedSides.Add(GenerateNestedSideModel(newSideModel.PanelModel, 1, xNestedSidesCount));
-                    }
-                }
+                    var nestedSidesArray = GenerateNestedSides(index, xNestedSidesCount, newSideModel,
+                        _gameplayConfig.CubeSizeVector.x,
+                        -_gameplayConfig.CubeSizeVector.x);
 
-                sidesModelList.Add(new SideModel(newSideModel.Side, newSideModel.PanelModel.CubeIndexes,
-                    nestedSides.ToArray(), _gameplayConfig.CubeSizeVector));
+                    sidesModelList.Add(new SideModel(newSideModel.Side, newSideModel.PanelModel.CubeIndexes,
+                        nestedSidesArray, _gameplayConfig.CubeSizeVector));
+                }
             }
 
             var downSideStartIndex = (_gameplayConfig.CubeSizeVector.x * _gameplayConfig.CubeSizeVector.x) *
@@ -124,11 +124,37 @@ namespace Runtime.Core
 
             for (var i = 0; i < nestedSidesCount; i++)
             {
-                nestedSides.Add(GenerateNestedSideModel(sideModel, (_horizontalStep * offset) + (i * offset),
+                nestedSides.Add(GenerateNestedSideModel(sideModel,
+                    (_horizontalStep * offset) + (i * _horizontalStep * offset),
                     nestedSidesCount));
             }
 
             return new SideModel(sideConfig.CubeSide, indexes, nestedSides.ToArray(), _gameplayConfig.CubeSizeVector);
+        }
+
+        private CubePlacesModel[] GenerateNestedSides(int index, int nestedSidesCount, SideModel newSideModel,
+            int rightOffset, int leftOffset)
+        {
+            var nestedSides = new List<CubePlacesModel>();
+
+            if (index % 2 == 0)
+            {
+                for (var i = 0; i < nestedSidesCount; i++)
+                {
+                    nestedSides.Add(GenerateNestedSideModel(newSideModel.PanelModel, rightOffset,
+                        nestedSidesCount));
+                }
+            }
+            else
+            {
+                for (var i = 0; i < nestedSidesCount; i++)
+                {
+                    nestedSides.Add(GenerateNestedSideModel(newSideModel.PanelModel, leftOffset,
+                        nestedSidesCount));
+                }
+            }
+
+            return nestedSides.ToArray();
         }
 
         private CubePlacesModel GenerateNestedSideModel(CubePlacesModel previousCollectionModel, int offset,
