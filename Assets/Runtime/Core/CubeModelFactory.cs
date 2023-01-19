@@ -104,8 +104,7 @@ namespace Runtime.Core
 
             sidesModelList.Add(lastSideModel);
 
-            return new CubeModel(sidesModelList.ToArray(), _gameplayConfig.CubeSizeVector,
-                new Vector2Int(xNestedSidesCount,yNestedSidesCount));
+            return new CubeModel(sidesModelList.ToArray(), _gameplayConfig.CubeSizeVector);
         }
 
         private SideModel GenerateDefaultSideModel(SideConfig sideConfig, int startIndex, int offset,

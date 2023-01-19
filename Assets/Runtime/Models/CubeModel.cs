@@ -15,11 +15,12 @@ namespace Runtime.Models
         private Vector2Int _cubeLenght;
         private Vector2Int _nestedSidesCount;
         
-        public CubeModel(SideModel[] sidesData, Vector2Int cubeLenght, Vector2Int nestedSidesCount = new Vector2Int())
+        public CubeModel(SideModel[] sidesData, Vector2Int cubeLenght)
         {
             _sidesData = sidesData;
             _cubeLenght = cubeLenght;
-            _nestedSidesCount = nestedSidesCount;
+            _nestedSidesCount = new Vector2Int(_sidesData.First(x => x.Side == Side.UpSide).AttachedPanelModels.Length + 1,
+                _sidesData.First(x => x.Side == Side.RightSide).AttachedPanelModels.Length + 1);
             
             ConfigureSidesGraphs();
         }
