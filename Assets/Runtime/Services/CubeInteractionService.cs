@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Cysharp.Threading.Tasks;
 
@@ -49,6 +50,7 @@ namespace Runtime.Services
                 rotationValue.RotationSide.GetRotateDirection(rotationValue.RotationCondition), rotationValue.Deep);
             Debug.Log(rotationValue.RotationSide);
             _modelRotationHelper.RotateCubeModel(rotationValue);
+            await UniTask.CompletedTask;
         }
 
         public Vector2 GetCubeSize()
