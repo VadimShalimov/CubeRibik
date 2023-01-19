@@ -23,6 +23,11 @@ namespace Runtime.Services
 
         private ViewRotationHelper _viewRotationHelper;
 
+        public Vector2Int GetNestedSideCount()
+        {
+            return _cubeModel.NestedSideCount;
+        }
+
         public void AddCubeModel(CubeModel cubeModel)
         {
             _cubeModel = cubeModel;
@@ -36,14 +41,14 @@ namespace Runtime.Services
             _viewRotationHelper = new ViewRotationHelper();
         }
 
-        public void RotateCubeModel(Side targetSide, bool directionCondition, int deep)
+        public async UniTask RotateCubeModelAsync(RotationValue rotationValue)
         {
-            var cubeIndexes = _cubeModel.GetSideModel(targetSide);
+            var cubeIndexes = _cubeModel.GetSideModel(rotationValue.RotationSide);
 
-            _viewRotationHelper.RotateSideAsync(GetCubes(cubeIndexes, deep),
-                targetSide.GetRotateDirection(directionCondition), deep).Forget();
-            Debug.Log(targetSide);
-            _modelRotationHelper.RotateCubeModel(targetSide, directionCondition, deep);
+            await _viewRotationHelper.RotateSideAsync(GetCubes(cubeIndexes, rotationValue.Deep),
+                rotationValue.RotationSide.GetRotateDirection(rotationValue.RotationCondition), rotationValue.Deep);
+            Debug.Log(rotationValue.RotationSide);
+            _modelRotationHelper.RotateCubeModel(rotationValue);
         }
 
         public Vector2 GetCubeSize()

@@ -9,15 +9,18 @@ namespace Runtime.Models
     public class CubeModel
     {
         public Vector2Int CubeLenght => _cubeLenght;
-        
+        public Vector2Int NestedSideCount => _nestedSidesCount; 
+            
         private readonly SideModel[] _sidesData;
         private Vector2Int _cubeLenght;
+        private Vector2Int _nestedSidesCount;
         
-        public CubeModel(SideModel[] sidesData, Vector2Int cubeLenght)
+        public CubeModel(SideModel[] sidesData, Vector2Int cubeLenght, Vector2Int nestedSidesCount = new Vector2Int())
         {
             _sidesData = sidesData;
             _cubeLenght = cubeLenght;
-
+            _nestedSidesCount = nestedSidesCount;
+            
             ConfigureSidesGraphs();
         }
         

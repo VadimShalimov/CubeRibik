@@ -39,6 +39,8 @@ namespace Runtime.Root
             builder.RegisterEntryPoint<PlayerInputController>();
 
             builder.RegisterEntryPoint<CubeInputPresenter>();
+
+            builder.RegisterEntryPoint<BlendController>();
         }
     }
 }

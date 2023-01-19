@@ -14,13 +14,13 @@ namespace Runtime.Utils
             _cubeModel = cubeModel;
         }
 
-        public void RotateCubeModel(Side side, bool rotateCondition, int sidesDeep)
+        public void RotateCubeModel(RotationValue rotationValue)
         {
-            var targetSide = _cubeModel.GetSideModel(side);
+            var targetSide = _cubeModel.GetSideModel(rotationValue.RotationSide);
 
-            for (int i = 1; i < sidesDeep + 1; i++)
+            for (int i = 1; i < rotationValue.Deep + 1; i++)
             {
-                RotateSide(targetSide, rotateCondition, i);
+                RotateSide(targetSide, rotationValue.RotationCondition, i);
             }
         }
 

@@ -7,6 +7,7 @@ using Assets.Runtime.Configs.SerializableObjects;
 
 using Runtime.Enums;
 using Runtime.Models;
+using UnityEngine;
 
 namespace Runtime.Core
 {
@@ -103,7 +104,8 @@ namespace Runtime.Core
 
             sidesModelList.Add(lastSideModel);
 
-            return new CubeModel(sidesModelList.ToArray(), _gameplayConfig.CubeSizeVector);
+            return new CubeModel(sidesModelList.ToArray(), _gameplayConfig.CubeSizeVector,
+                new Vector2Int(xNestedSidesCount,yNestedSidesCount));
         }
 
         private SideModel GenerateDefaultSideModel(SideConfig sideConfig, int startIndex, int offset,

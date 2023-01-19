@@ -41,7 +41,7 @@ namespace Runtime.Utils
                 return;
             }
 
-            var indexCentre = (cubes.Length / deep) / 2;
+            var indexCentre = deep == 0? cubes.Length / 2: (cubes.Length / deep) / 2;
             var cubeParent = cubes[indexCentre].transform.parent;
 
             _rotationRoot.transform.position = cubes[indexCentre].transform.position;

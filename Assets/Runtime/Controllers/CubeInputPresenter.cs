@@ -102,7 +102,7 @@ namespace Runtime.Controllers
 
         private void HandleRotateAction(bool condition)
         {
-            _cubeInteractionService.RotateCubeModel(_currentSide, condition, _deep);
+            _cubeInteractionService.RotateCubeModelAsync(new RotationValue(_currentSide, condition, _deep));
         }
     }
 }
