@@ -45,12 +45,16 @@ namespace Runtime.Controllers
             var randomBlendActions = Random.Range(_minMaxBlendVector.x, _minMaxBlendVector.y);
             var valuesArray = new RotationValue[(int)randomBlendActions];
             
-            for (int i = 0; i < randomBlendActions - 1; i++)
+            for (var i = 0; i < randomBlendActions - 1; i++)
             {
-                var randomValue = Random.Range(0, 7);
-                var randomSide = (Side)randomValue;
+                var randomSide = (Side)Random.Range(0, 6);
+                
                 var randomCondition = Random.Range(0, 2) > 0;
-                var randomDeep = Random.Range(0, _cubeInteractionService.GetNestedSideCount().y);
+
+                var maxDeep = ValidateXZSideDimension(randomSide) ? _cubeInteractionService.GetNestedSideCount().x
+                    : _cubeInteractionService.GetNestedSideCount().y;
+                
+                var randomDeep = Random.Range(1, maxDeep + 1);
 
                 valuesArray[i] = new RotationValue(randomSide, randomCondition, randomDeep);
             }
@@ -65,6 +69,16 @@ namespace Runtime.Controllers
             }
             
             _inputModel.EnableInputFilter();
+        }
+
+        private bool ValidateXZSideDimension(Side side)
+        {
+            if (side != Side.RightSide && side != Side.LeftSide)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
